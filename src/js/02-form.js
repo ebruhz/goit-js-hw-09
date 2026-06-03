@@ -7,46 +7,50 @@ const formData = {
   message: '',
 };
 
-// Sayfa açıldığında localStorage'dan verileri al
+// Sayfa açılınca localStorage'tan doldur
 const savedData = localStorage.getItem(STORAGE_KEY);
 
 if (savedData) {
   const parsedData = JSON.parse(savedData);
 
-  formData.email = parsedData.email || '';
-  formData.message = parsedData.message || '';
+  formData.email = parsedData.email ?? '';
+  formData.message = parsedData.message ?? '';
 
   form.elements.email.value = formData.email;
   form.elements.message.value = formData.message;
 }
 
-// Input olayını dinle
+// INPUT DELEGATION
 form.addEventListener('input', event => {
-  formData[event.target.name] = event.target.value.trim();
+  const { name, value } = event.target;
+
+  formData[name] = value.trim();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 });
 
-// Submit olayını dinle
+// SUBMIT
 form.addEventListener('submit', event => {
   event.preventDefault();
 
-  const email = form.elements.email.value.trim();
-  const message = form.elements.message.value.trim();
+  const email = formData.email.trim();
+  const message = formData.message.trim();
 
+  // boş kontrol
   if (!email || !message) {
-    alert('Please fill in all fields');
     return;
   }
 
-  console.log({
+  const result = {
     email,
     message,
-  });
+  };
 
-  localStorage.removeItem(STORAGE_KEY);
+  console.log(result);
 
+  // temizle
   form.reset();
+  localStorage.removeItem(STORAGE_KEY);
 
   formData.email = '';
   formData.message = '';
